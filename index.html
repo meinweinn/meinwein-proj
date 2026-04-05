@@ -3246,8 +3246,23 @@
     }
 
     @media (max-width: 720px){
+      .snap{
+        height: 100dvh;
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
+        scroll-snap-type: none;
+        scroll-behavior: auto;
+        overscroll-behavior-y: auto;
+      }
+
       .snapItem{
+        min-height: auto;
+        scroll-snap-align: none;
         padding: 84px 14px 24px;
+      }
+
+      #hero.snapItem{
+        min-height: 100dvh;
       }
 
       .sectionInner,
@@ -4883,6 +4898,7 @@
       const sections = ['hero', 'about', 'work', 'contact']
         .map((id) => document.getElementById(id))
         .filter(Boolean);
+      const isMobileFreeScroll = () => window.matchMedia('(max-width: 720px)').matches;
 
       let currentActiveId = 'hero';
       let workAutoOpened = false; // open first experience only once (first time we land on Work)
@@ -4951,14 +4967,28 @@
         if (!scroller || !sections.length) return;
         const y = scroller.scrollTop;
         let best = sections[0];
-        let bestDist = Infinity;
-        for (const s of sections) {
-          const d = Math.abs(s.offsetTop - y);
-          if (d < bestDist) {
-            bestDist = d;
-            best = s;
+
+        if (isMobileFreeScroll()) {
+          const probe = y + (scroller.clientHeight * 0.38);
+          for (const s of sections) {
+            const top = s.offsetTop;
+            const bottom = top + s.offsetHeight;
+            if (probe >= top && probe < bottom) {
+              best = s;
+              break;
+            }
+          }
+        } else {
+          let bestDist = Infinity;
+          for (const s of sections) {
+            const d = Math.abs(s.offsetTop - y);
+            if (d < bestDist) {
+              bestDist = d;
+              best = s;
+            }
           }
         }
+
         if (best && best.id && best.id !== currentActiveId) setActive(best.id);
       };
 
