@@ -3349,23 +3349,29 @@
       .topRight{
         top: 12px;
         right: 12px;
-        gap: 6px;
+        gap: 0;
         align-items: flex-end;
       }
 
       .pill{
-        max-width: min(72vw, 248px);
-        padding: 8px 10px;
-        font-size: 11px;
+        display: none;
       }
 
       .copyBtn{
-        padding: 8px 10px;
+        min-width: 58px;
+        min-height: 40px;
+        padding: 8px 12px;
         font-size: 11px;
+        justify-content: center;
       }
 
       .copyBtn .kbd{
         display: none;
+      }
+
+      .copyText{
+        font-size: 11px;
+        letter-spacing: .03em;
       }
 
       .dots{
@@ -3443,7 +3449,7 @@
       }
 
       .aboutGrid{
-        gap: 16px;
+        gap: 12px;
       }
 
       .idCard{
@@ -3466,13 +3472,43 @@
       }
 
       .aboutBento{
-        gap: 12px;
+        grid-template-columns: 1fr;
+        gap: 0;
       }
 
-      .aboutFeature,
-      .focusCard,
-      .principlesCard{
+      .aboutFeature{
         padding: 16px 14px 14px;
+      }
+
+      .aboutFeature h3{
+        margin-bottom: 8px;
+      }
+
+      .aboutFeatureIntro{
+        font-size: 12.5px;
+        line-height: 1.55;
+        margin-bottom: 12px;
+      }
+
+      .whatGrid{
+        gap: 10px;
+      }
+
+      .whatCard{
+        padding: 12px 12px 11px;
+      }
+
+      .whatCard p{
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+
+      .whatCard ul{
+        margin-top: 8px;
+      }
+
+      .aboutSecondary{
+        display: none;
       }
 
       #work.snapItem{
@@ -3702,7 +3738,7 @@
           <div class="photoWrap">
             <div class="photoCard" aria-label="Hero photo">
               <span class="glassLine" aria-hidden="true"></span>
-              <img src="./hero.png" alt="" draggable="false" />
+              <img data-src="./hero.png" alt="" draggable="false" decoding="async" fetchpriority="low" />
             </div>
           </div>
 
@@ -3726,7 +3762,7 @@
             <aside class="idCard" aria-label="Identity card">
               <div class="idTop">
                 <div class="idAvatar" aria-hidden="true">
-                  <img src="./hero.png" alt="" draggable="false" />
+                  <img data-src="./hero.png" alt="" draggable="false" loading="lazy" decoding="async" fetchpriority="low" />
                 </div>
                 <div class="idInfo">
                   <div class="idName">meinwein</div>
@@ -4146,15 +4182,31 @@
       {
         document.title = 'meinwein - Advisor';
         const metaDesc = qs('meta[name="description"]');
+        const isMobileViewport = () => window.matchMedia('(max-width: 720px)').matches;
+        const ensureDataSrc = (img, priority) => {
+          if (!img) return;
+          const src = img.dataset.src || '';
+          if (!src) return;
+          if (!img.getAttribute('src')) img.setAttribute('src', src);
+          if (priority) img.setAttribute('fetchpriority', priority);
+        };
         if (metaDesc) {
           metaDesc.setAttribute('content', 'Strategic advisor for Solana partnerships, collabs, and growth.');
         }
 
         const pillText = qs('.pillText');
-        if (pillText) pillText.textContent = 'Available for select projects';
-
+        const copyBtnEl = qs('.copyBtn');
+        const copyTextEl = qs('.copyText');
         const kbd = qs('.copyBtn .kbd');
         if (kbd) kbd.textContent = 'Cmd / Ctrl';
+
+        const syncTopBar = () => {
+          if (pillText) pillText.textContent = isMobileViewport() ? 'Available' : 'Available for select projects';
+          if (copyTextEl) copyTextEl.textContent = isMobileViewport() ? 'Email' : 'Copy email';
+          if (copyBtnEl) copyBtnEl.setAttribute('aria-label', isMobileViewport() ? 'Email' : 'Copy email');
+        };
+        syncTopBar();
+        window.addEventListener('resize', syncTopBar, { passive: true });
 
         const scrollChev = qs('.scrollHint .chev');
         if (scrollChev) scrollChev.textContent = '\u2193';
@@ -4166,7 +4218,17 @@
           const photoWrap = qs('.photoWrap', heroCine);
           const photoCard = qs('.photoCard', heroCine);
           const heroImg = qs('.photoCard img', heroCine);
-          if (heroImg) heroImg.setAttribute('src', './hero.png');
+          const syncHeroImage = () => {
+            if (!heroImg) return;
+            if (isMobileViewport()) {
+              heroImg.removeAttribute('src');
+              heroImg.setAttribute('fetchpriority', 'low');
+            } else {
+              ensureDataSrc(heroImg, 'high');
+            }
+          };
+          syncHeroImage();
+          window.addEventListener('resize', syncHeroImage, { passive: true });
           if (photoCard && !qs('.photoOverlay', photoCard)) {
             const overlay = document.createElement('div');
             overlay.className = 'photoOverlay';
@@ -4231,7 +4293,28 @@
         }
 
         const idAvatar = qs('.idAvatar img');
-        if (idAvatar) idAvatar.setAttribute('src', './hero.png');
+        if (idAvatar) {
+          const aboutSection = document.getElementById('about');
+          const loadAvatar = () => ensureDataSrc(idAvatar, 'low');
+          if (isMobileViewport() && 'IntersectionObserver' in window && aboutSection) {
+            const io = new IntersectionObserver((entries) => {
+              if (entries.some((entry) => entry.isIntersecting || entry.intersectionRatio > 0)) {
+                loadAvatar();
+                io.disconnect();
+              }
+            }, {
+              root: qs('.snap') || null,
+              rootMargin: '240px 0px',
+            });
+            io.observe(aboutSection);
+          } else {
+            loadAvatar();
+          }
+
+          window.addEventListener('resize', () => {
+            if (!isMobileViewport()) loadAvatar();
+          }, { passive: true });
+        }
 
         const idTitle = qs('.idTitle');
         if (idTitle) idTitle.textContent = 'Advisor / Collab Manager';
