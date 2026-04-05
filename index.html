@@ -3316,10 +3316,13 @@
       .title::before,
       .title .ch,
       .photoCard .glassLine,
-      .scrollHint,
       .photoCard::before,
       .photoCard::after{
         animation: none !important;
+      }
+
+      .scrollHint{
+        display: none;
       }
 
       .title{
@@ -3523,6 +3526,15 @@
       .tBody{
         padding: 0 16px 16px;
         font-size: 13px;
+        opacity: 1;
+        transform: none;
+        will-change: auto;
+      }
+
+      .tBodyWrap,
+      details.tItem,
+      .tBody{
+        transition: none !important;
       }
 
       .tLinks{
@@ -5281,6 +5293,7 @@
       const timeline = qs('.timeline');
       if (timeline) {
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const useLiteAccordion = () => reduce || isMobileLite();
         const items = qsa('details.tItem', timeline);
 
         // Active pill tooltip (portal)
@@ -5350,12 +5363,14 @@
           if (host) host.classList.remove('isRaised');
         };
 
-        qsa('.activePill', timeline).forEach((pill) => {
-          pill.addEventListener('pointerenter', () => showActiveTip(pill), { passive: true });
-          pill.addEventListener('pointerleave', () => { hideActiveTip(); dropRaised(pill); }, { passive: true });
-          pill.addEventListener('focus', () => showActiveTip(pill), { passive: true });
-          pill.addEventListener('blur', () => { hideActiveTip(); dropRaised(pill); }, { passive: true });
-        });
+        if (!isMobileLite()) {
+          qsa('.activePill', timeline).forEach((pill) => {
+            pill.addEventListener('pointerenter', () => showActiveTip(pill), { passive: true });
+            pill.addEventListener('pointerleave', () => { hideActiveTip(); dropRaised(pill); }, { passive: true });
+            pill.addEventListener('focus', () => showActiveTip(pill), { passive: true });
+            pill.addEventListener('blur', () => { hideActiveTip(); dropRaised(pill); }, { passive: true });
+          });
+        }
 
         const closeTimers = new WeakMap();
         const CLOSE_MS = 560;
@@ -5382,7 +5397,7 @@
 
         const closeWithAnim = (it) => {
           if (!it || !it.open) return;
-          if (reduce) {
+          if (useLiteAccordion()) {
             it.open = false;
             cleanupInline(it);
             return;
@@ -5417,6 +5432,10 @@
           if (sum) {
             sum.addEventListener('click', (e) => {
               if (!it.open) return;
+              if (useLiteAccordion()) {
+                sfx('close');
+                return;
+              }
               e.preventDefault();
               sfx('close');
               closeWithAnim(it);
@@ -5433,7 +5452,14 @@
               sfx('open');
               clearClose(it);
               items.forEach((other) => {
-                if (other !== it) closeWithAnim(other);
+                if (other !== it) {
+                  if (useLiteAccordion()) {
+                    other.open = false;
+                    cleanupInline(other);
+                  } else {
+                    closeWithAnim(other);
+                  }
+                }
               });
             } else {
               if (!it.classList.contains('isClosing')) cleanupInline(it);
