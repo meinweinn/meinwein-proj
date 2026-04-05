@@ -3284,6 +3284,55 @@
         padding: 18px 16px;
       }
 
+      .bgBlobs{
+        display: none;
+      }
+
+      body{
+        background:
+          radial-gradient(900px circle at 22% 10%, rgba(130,114,255,.08), transparent 42%),
+          radial-gradient(760px circle at 82% 16%, rgba(133,223,190,.06), transparent 38%),
+          linear-gradient(180deg, #0b0d12 0%, #090b10 100%);
+      }
+
+      .sectionInner,
+      .pill,
+      .copyBtn,
+      .soundBtn,
+      .heroStat,
+      .idCard,
+      .aboutFeature,
+      .focusCard,
+      .principlesCard,
+      details.tItem,
+      .contactCompose,
+      .channelBtn,
+      .kpi{
+        backdrop-filter: none !important;
+        box-shadow: 0 14px 36px rgba(0,0,0,.18) !important;
+      }
+
+      .title,
+      .title::before,
+      .title .ch,
+      .photoCard .glassLine,
+      .scrollHint,
+      .photoCard::before,
+      .photoCard::after{
+        animation: none !important;
+      }
+
+      .title{
+        filter:
+          drop-shadow(0 0 10px rgba(128,148,255,.08))
+          drop-shadow(0 0 18px rgba(133,223,190,.06));
+      }
+
+      .title::before{
+        opacity: .14;
+        filter: blur(18px);
+      }
+
       .soundCtl{
         left: 12px;
         top: 12px;
@@ -3317,14 +3366,7 @@
       }
 
       .dots{
-        left: 50%;
-        right: auto;
-        top: auto;
-        bottom: 12px;
-        transform: translateX(-50%);
-        grid-auto-flow: column;
-        gap: 10px;
-        padding: 8px 10px;
+        display: none;
       }
 
       .dot{
@@ -3398,10 +3440,17 @@
       .photoCard{
         max-width: 320px;
         margin-inline: auto;
+        transform: none !important;
+        box-shadow: 0 18px 44px rgba(0,0,0,.24);
       }
 
       .photoOverlay{
         padding: 18px;
+      }
+
+      .photoCard img{
+        transform: none !important;
+        filter: none !important;
       }
 
       .aboutGrid{
@@ -4840,6 +4889,7 @@
       }
 
       const sfx = (type) => { void SFX.play(type); };
+      const isMobileLite = () => window.matchMedia('(max-width: 720px)').matches;
 
       // Be deterministic on reloads (avoid auto-restoring scroll positions)
       if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
@@ -4874,7 +4924,7 @@
 
       // --- Photo tilt ---
       const card = qs('.photoCard');
-      if (card) {
+      if (card && !isMobileLite()) {
         const maxTilt = 18;
         const reset = () => {
           card.style.transform = 'perspective(900px) rotateX(0deg) rotateY(0deg) translateZ(0)';
@@ -5011,8 +5061,10 @@
 
         const tick = () => {
           raf = 0;
-          if (typeof SFX.scrollStart === 'function') { void SFX.scrollStart(); }
-          if (typeof SFX.scrollUpdate === 'function') SFX.scrollUpdate({ speed: pendingSpeed });
+          if (!isMobileLite()) {
+            if (typeof SFX.scrollStart === 'function') { void SFX.scrollStart(); }
+            if (typeof SFX.scrollUpdate === 'function') SFX.scrollUpdate({ speed: pendingSpeed });
+          }
         };
 
         scroller.addEventListener('scroll', () => {
@@ -5030,11 +5082,11 @@
           lastY = y;
           lastT = now;
 
-          if (!raf) raf = requestAnimationFrame(tick);
+          if (!isMobileLite() && !raf) raf = requestAnimationFrame(tick);
 
           if (endTimer) window.clearTimeout(endTimer);
           endTimer = window.setTimeout(() => {
-            if (typeof SFX.scrollStop === 'function') SFX.scrollStop(false);
+            if (!isMobileLite() && typeof SFX.scrollStop === 'function') SFX.scrollStop(false);
             updateActiveFromScroll();
           }, 150);
         }, { passive: true });
@@ -5044,7 +5096,7 @@
       requestAnimationFrame(updateActiveFromScroll);
 
       // Trigger the hero cinematic settle once on load
-      {
+      if (!isMobileLite()) {
         const cine = qs('[data-hero-cine]');
         if (cine) {
           cine.classList.add('isSettle');
@@ -5138,7 +5190,7 @@
       }, { passive: false });
 
       // --- Premium background parallax (scroll) ---
-      if (scroller && blobLayer) {
+      if (scroller && blobLayer && !isMobileLite()) {
         let raf = 0;
         const onScroll = () => {
           if (raf) return;
@@ -5155,7 +5207,7 @@
       }
 
       // --- Mouse parallax for background (subtle) ---
-      if (blobLayer) {
+      if (blobLayer && !isMobileLite()) {
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
         if (!reduce) {
           const strengthX = 14;
@@ -5459,7 +5511,7 @@
       // --- Magnetic micro-interactions (buttons/cards) ---
       {
         const reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        if (!reduce) {
+        if (!reduce && !isMobileLite()) {
           const els = qsa('[data-magnetic]');
           els.forEach((el) => {
             if (el.classList && el.classList.contains('photoCard')) return;
