@@ -3245,6 +3245,328 @@
       .contactGrid{ grid-template-columns: 1fr; }
     }
 
+    @media (max-width: 720px){
+      .snapItem{
+        padding: 84px 14px 24px;
+      }
+
+      .sectionInner,
+      .heroInner{
+        width: min(100%, calc(100vw - 28px));
+      }
+
+      .sectionInner{
+        padding: 18px 16px;
+      }
+
+      .soundCtl{
+        left: 12px;
+        top: 12px;
+      }
+
+      .soundBtn{
+        width: 40px;
+        height: 40px;
+      }
+
+      .topRight{
+        top: 12px;
+        right: 12px;
+        gap: 6px;
+        align-items: flex-end;
+      }
+
+      .pill{
+        max-width: min(72vw, 248px);
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .copyBtn{
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      .copyBtn .kbd{
+        display: none;
+      }
+
+      .dots{
+        left: 50%;
+        right: auto;
+        top: auto;
+        bottom: 12px;
+        transform: translateX(-50%);
+        grid-auto-flow: column;
+        gap: 10px;
+        padding: 8px 10px;
+      }
+
+      .dot{
+        width: 18px;
+        height: 10px;
+      }
+
+      .dot::before{
+        display: none;
+      }
+
+      .dot.isActive::after{
+        width: 18px;
+        height: 6px;
+      }
+
+      .heroInner{
+        min-height: auto;
+      }
+
+      .heroDeck{
+        gap: 18px;
+      }
+
+      .heroCopy{
+        gap: 14px;
+      }
+
+      .heroEyebrow{
+        font-size: 10px;
+        letter-spacing: .13em;
+        padding: 7px 10px;
+      }
+
+      .title{
+        font-size: clamp(48px, 18vw, 86px);
+        --tw: 560px;
+        --drift: 300px;
+      }
+
+      .subtitle{
+        max-width: none;
+        font-size: 18px;
+      }
+
+      .heroMeta{
+        gap: 10px;
+      }
+
+      .heroStat{
+        padding: 12px 14px;
+      }
+
+      .heroActions{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
+
+      .heroActions .ctaBtn{
+        width: 100%;
+        justify-content: center;
+      }
+
+      .heroVisual{
+        width: 100%;
+        justify-self: stretch;
+        padding: 14px 8px 0;
+      }
+
+      .photoCard{
+        max-width: 320px;
+        margin-inline: auto;
+      }
+
+      .photoOverlay{
+        padding: 18px;
+      }
+
+      .aboutGrid{
+        gap: 16px;
+      }
+
+      .idCard{
+        padding: 18px 16px;
+      }
+
+      .idName{
+        font-size: clamp(30px, 13vw, 52px);
+      }
+
+      .idActions{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .idActions .ctaBtn{
+        width: 100%;
+        justify-content: center;
+      }
+
+      .aboutBento{
+        gap: 12px;
+      }
+
+      .aboutFeature,
+      .focusCard,
+      .principlesCard{
+        padding: 16px 14px 14px;
+      }
+
+      #work.snapItem{
+        place-items: start center;
+        padding-top: 84px;
+        padding-bottom: 32px;
+      }
+
+      #work .sectionInner{
+        width: min(100%, calc(100vw - 28px));
+        margin-top: 0;
+        max-height: none;
+        overflow: visible;
+      }
+
+      .timeline{
+        --timeline-pad: 28px;
+        --timeline-rail-x: 4px;
+        margin-top: 16px;
+        gap: 12px;
+      }
+
+      details.tItem summary{
+        padding: 18px 16px 12px;
+      }
+
+      .tHead{
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+
+      .tTitle{
+        font-size: clamp(20px, 7vw, 28px);
+      }
+
+      .tBody{
+        padding: 0 16px 16px;
+        font-size: 13px;
+      }
+
+      .tLinks{
+        gap: 8px;
+      }
+
+      .tLink{
+        padding: 8px 10px;
+        font-size: 11px;
+      }
+
+      #contact.snapItem{
+        place-items: start center;
+        padding-top: 84px;
+        padding-bottom: 24px;
+      }
+
+      #contact .sectionInner{
+        width: min(100%, calc(100vw - 28px));
+        max-height: none;
+        overflow: visible;
+      }
+
+      .contactGrid{
+        gap: 12px;
+        margin-top: 12px;
+      }
+
+      .contactCompose{
+        padding: 16px 14px;
+      }
+
+      .contactHeader{
+        display: grid;
+        gap: 12px;
+        margin-bottom: 10px;
+      }
+
+      .contactHeader h3{
+        font-size: clamp(22px, 8vw, 30px);
+      }
+
+      .contactHeader p{
+        font-size: 12.5px;
+        line-height: 1.5;
+      }
+
+      .contactKpis{
+        grid-template-columns: 1fr;
+        gap: 8px;
+        margin-top: 10px;
+      }
+
+      .contactForm{
+        margin-top: 12px;
+        padding-top: 12px;
+        gap: 8px;
+      }
+
+      .cField label{
+        margin-bottom: 6px;
+      }
+
+      .cInput,
+      .cTextarea{
+        padding: 10px 10px;
+      }
+
+      .cTextarea{
+        min-height: 110px;
+      }
+
+      .contactActions{
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 8px;
+      }
+
+      .contactActions .ctaBtn{
+        width: 100%;
+        justify-content: center;
+      }
+
+      .contactSide{
+        gap: 12px;
+      }
+
+      .channelList{
+        gap: 8px;
+        margin-top: 8px;
+      }
+
+      .channelBtn{
+        padding: 10px 10px;
+        border-radius: 16px;
+      }
+
+      .contactNote{
+        margin-top: 8px;
+        padding-top: 10px;
+        font-size: 12px;
+      }
+
+      .contactQuote{
+        gap: 10px;
+      }
+
+      .contactQuoteText{
+        font-size: clamp(24px, 11vw, 38px);
+        max-width: none;
+      }
+
+      .contactQuoteMeta{
+        font-size: 12.5px;
+        line-height: 1.55;
+      }
+    }
+
     @media (prefers-reduced-motion: reduce){
       .spotlight{ transition: none; }
       .noise{ animation: none !important; transform: rotate(2deg); }
