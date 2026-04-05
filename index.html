@@ -3256,13 +3256,23 @@
       }
 
       .snapItem{
+        display: block;
         min-height: auto;
         scroll-snap-align: none;
         padding: 84px 14px 24px;
       }
 
       #hero.snapItem{
+        display: grid;
+        place-items: center;
         min-height: 100dvh;
+      }
+
+      .reveal,
+      .snapItem.isActive .reveal{
+        opacity: 1;
+        transform: none;
+        transition: none;
       }
 
       .sectionInner,
